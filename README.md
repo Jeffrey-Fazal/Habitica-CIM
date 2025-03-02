@@ -64,3 +64,12 @@ Once everything is set up correctly, you should be able to retrieve and manage H
 ---
 
 **Happy Productivity with Habitica & ChatGPT!** 🚀
+
+
+### Log
+
+- Commit updated wranger has get tasks and delete tasks working. Update tasks and create tasks are not working
+- Testing api methods
+
+## Endpoints used:
+https://habitica.com/apidoc/#api-Task-CreateUserTasks
