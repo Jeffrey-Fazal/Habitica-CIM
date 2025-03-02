@@ -1,0 +1,8 @@
+name = "habitica-proxy-misty-sun-5caa"
+main = "index.js"
+type = "javascript"
+account_id = "bfe131fc381106b42e0812330c62d13c"
+workers_dev = true
+
+[observability.logs]
+enabled = true
