@@ -1,3 +1,4 @@
+// Deployed via GitHub https://github.com/Jeffrey-Fazal/Habitica-CIM
 export default {
 	async fetch(request, env) {
 	  // Retrieve the custom authentication header
