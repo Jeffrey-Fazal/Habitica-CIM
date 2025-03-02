@@ -59,3 +59,62 @@ paths:
                   $ref: '#/components/schemas/Task'
         "401":
           description: Unauthorized, invalid or missing credentials
+
+  /tasks/{taskId}:
+    parameters:
+      - in: path
+        name: taskId
+        required: true
+        schema:
+          type: string
+        description: The ID of the task.
+    delete:
+      operationId: deleteTask
+      summary: Delete a task
+      description: Deletes a specific task identified by its taskId. Requires the X-Auth-Key header.
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: Task deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Task deleted successfully."
+        "401":
+          description: Unauthorized, invalid or missing credentials
+        "404":
+          description: Task not found
+
+    patch:
+      operationId: updateTask
+      summary: Update a task
+      description: Update a specific task identified by its taskId. Requires the X-Auth-Key header.
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Task'
+      responses:
+        "200":
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        "400":
+          description: Bad Request - Invalid input data
+        "401":
+          description: Unauthorized, invalid or missing credentials
+        "404":
+          description: Task not found
