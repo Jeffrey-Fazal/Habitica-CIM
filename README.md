@@ -70,3 +70,7 @@ https://habitica.com/apidoc/#api-Task-CreateUserTasks
 https://habitica.com/apidoc/#api-Task-GetUserTasks
 https://habitica.com/apidoc/#api-Task-UpdateTask
 https://habitica.com/apidoc/#api-Task-DeleteTask
+
+## Credits
+
+Thanks to (@igromanru)(https://github.com/igromanru/habitica-api/tree/master) for his work on the Habitica API OpenAPI specification. 
