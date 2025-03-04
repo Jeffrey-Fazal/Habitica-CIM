@@ -1,8 +1,5 @@
 # Habitica Proxy for ChatGPT Actions
 
-## Author
-**Jeffrey Fazal**
-
 ## Description
 This project sets up a **Cloudflare Worker proxy** to allow **ChatGPT Actions** to interact with the **Habitica API**. Habitica requires authentication via headers (`x-api-user` and `x-api-key`), but **ChatGPT Actions only support one header or OAuth**. To work around this, we use a Cloudflare Worker to forward authenticated requests from ChatGPT to Habitica.
 
@@ -61,15 +58,22 @@ ChatGPT needs an **Action** that uses the OpenAPI spec provided in `Actions.md`.
 
 Once everything is set up correctly, you should be able to retrieve and manage Habitica tasks using ChatGPT Actions!
 
----
-
-**Happy Productivity with Habitica & ChatGPT!** 🚀
-
-
 ### Log
 
 - Commit updated wranger has get tasks and delete tasks working. Update tasks and create tasks are not working
 - Testing api methods
+- Server and Open API / Actions have now been setup
 
-## Endpoints used:
+## API Docs:
+--- 
+createTodoTask
 https://habitica.com/apidoc/#api-Task-CreateUserTasks
+
+getUserTasks
+https://habitica.com/apidoc/#api-Task-GetUserTasks
+
+updateTodoTask
+https://habitica.com/apidoc/#api-Task-UpdateTask
+
+deleteTodoTask
+https://habitica.com/apidoc/#api-Task-DeleteTask
