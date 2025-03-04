@@ -33,7 +33,7 @@ export default {
 	  if (!["GET", "HEAD"].includes(request.method)) {
 		// You can use request.body directly, or convert it to text if needed.
 		// Here, we use await request.text() to ensure the body is captured.
-		fetchOptions.body = await request.text();
+		fetchOptions.body = JSON.stringify(await request.json());
 	  }
   
 	  // Forward the request to Habitica

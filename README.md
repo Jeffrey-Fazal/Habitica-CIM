@@ -66,14 +66,7 @@ Once everything is set up correctly, you should be able to retrieve and manage H
 
 ## API Docs:
 --- 
-createTodoTask
 https://habitica.com/apidoc/#api-Task-CreateUserTasks
-
-getUserTasks
 https://habitica.com/apidoc/#api-Task-GetUserTasks
-
-updateTodoTask
 https://habitica.com/apidoc/#api-Task-UpdateTask
-
-deleteTodoTask
 https://habitica.com/apidoc/#api-Task-DeleteTask
