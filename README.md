@@ -64,6 +64,16 @@ Once everything is set up correctly, you should be able to retrieve and manage H
 - Testing api methods
 - Server and Open API / Actions have now been setup
 
+### Testing Endpoints
+
+## Can use CURL comaands to proxy
+
+```bash
+curl -X GET "https://misty-sun-5caa.jeffreyfazal.workers.dev/tasks/user" \
+     -H "X-Auth-Key: YOUR_SECRET_KEY"
+
+```
+
 ## API Docs:
 --- 
 https://habitica.com/apidoc/#api-Task-CreateUserTasks

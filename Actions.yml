@@ -50,22 +50,143 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Task'
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/TaskResponse'
+                  notifications:
+                    type: array
+                    items:
+                      type: object
         '400':
-          description: Invalid request.
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '401':
-          description: Unauthorized.
+          description: Unauthorized
+        '404':
+          description: Not Found
 
   /tasks/{taskId}:
-    put:
-      operationId: updateUserTask
-      summary: Update a task
-      description: Update an existing task for the user.
+    get:
+      operationId: getTask
+      summary: Get a task
+      description: Get a specific task by ID or alias
       parameters:
         - name: taskId
           in: path
           required: true
-          description: The ID of the task to update.
+          description: The task _id or alias
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved task
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      userId:
+                        type: string
+                      text:
+                        type: string
+                      alias:
+                        type: string
+                      type:
+                        type: string
+                        enum: [habit, daily, todo, reward]
+                      notes:
+                        type: string
+                      tags:
+                        type: array
+                        items:
+                          type: string
+                      value:
+                        type: number
+                      priority:
+                        type: number
+                      attribute:
+                        type: string
+                      challenge:
+                        type: object
+                        properties:
+                          taskId:
+                            type: string
+                          id:
+                            type: string
+                      group:
+                        type: object
+                        properties:
+                          assignedUsers:
+                            type: array
+                            items:
+                              type: string
+                          approval:
+                            type: object
+                            properties:
+                              required:
+                                type: boolean
+                              approved:
+                                type: boolean
+                              requested:
+                                type: boolean
+                      reminders:
+                        type: array
+                        items:
+                          type: object
+                      createdAt:
+                        type: string
+                        format: date-time
+                      updatedAt:
+                        type: string
+                        format: date-time
+                      history:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            value:
+                              type: number
+                            date:
+                              type: number
+                      down:
+                        type: boolean
+                      up:
+                        type: boolean
+                      id:
+                        type: string
+                  notifications:
+                    type: array
+                    items:
+                      type: object
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      operationId: updateUserTask
+      summary: Update a task
+      description: Update an existing task for the user. Any fields not specified will remain unchanged.
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          description: The task _id or alias
           schema:
             type: string
       requestBody:
@@ -80,13 +201,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Task'
-        '400':
-          description: Invalid request.
-        '401':
-          description: Unauthorized.
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/TaskResponse'
         '404':
-          description: Task not found.
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
     delete:
       operationId: deleteUserTask
@@ -96,16 +222,57 @@ paths:
         - name: taskId
           in: path
           required: true
-          description: The ID of the task to delete.
+          description: The task _id or alias
           schema:
             type: string
       responses:
         '200':
-          description: Task deleted successfully.
+          description: Task deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    description: An empty object
         '401':
-          description: Unauthorized.
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  error:
+                    type: string
+                    enum: [NotAuthorized]
+                  message:
+                    type: string
+                    enum: [
+                      "A task belonging to a challenge can't be deleted.",
+                      "Can't delete group tasks that are assigned to you",
+                      "Tasks belonging to a challenge can only be edited by the leader.",
+                      "Not authorized to manage tasks!"
+                    ]
         '404':
-          description: Task not found.
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  error:
+                    type: string
+                    enum: [NotFound]
+                  message:
+                    type: string
+                    enum: ["The specified task could not be found."]
 
 components:
   securitySchemes:
@@ -135,27 +302,291 @@ components:
       properties:
         text:
           type: string
+          description: The text to be displayed for the task
         type:
           type: string
           enum: [habit, daily, todo, reward]
+          description: Task type
+        tags:
+          type: array
+          items:
+            type: string
+          description: Array of UUIDs of tags
+        alias:
+          type: string
+          description: Alias to assign to task
+        attribute:
+          type: string
+          enum: [str, int, per, con]
+          description: User's attribute to use
+        checklist:
+          type: array
+          items:
+            type: object
+            properties:
+              text:
+                type: string
+              completed:
+                type: boolean
+        collapseChecklist:
+          type: boolean
+          default: false
         notes:
           type: string
         date:
           type: string
           format: date
-          description: Due date (only for type "todo").
+          description: Due date (only for type "todo")
+        priority:
+          type: number
+          enum: [0.1, 1, 1.5, 2]
+          default: 1
+          description: Difficulty level
+        reminders:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              startDate:
+                type: string
+              time:
+                type: string
+        frequency:
+          type: string
+          enum: [daily, weekly, monthly, yearly]
+          default: weekly
+        repeat:
+          type: object
+          properties:
+            su:
+              type: boolean
+              default: true
+            m:
+              type: boolean
+              default: true
+            t:
+              type: boolean
+              default: true
+            w:
+              type: boolean
+              default: true
+            th:
+              type: boolean
+              default: true
+            f:
+              type: boolean
+              default: true
+            s:
+              type: boolean
+              default: true
+        everyX:
+          type: number
+          default: 1
+        streak:
+          type: number
+          default: 0
+        daysOfMonth:
+          type: array
+          items:
+            type: integer
+        weeksOfMonth:
+          type: array
+          items:
+            type: integer
+        startDate:
+          type: string
+          format: date
+        up:
+          type: boolean
+          default: true
+        down:
+          type: boolean
+          default: true
+        value:
+          type: number
+          default: 0
+          minimum: 0
 
     TaskUpdate:
       type: object
       properties:
         text:
           type: string
-        type:
+          description: The text to be displayed for the task
+        attribute:
           type: string
-          enum: [habit, daily, todo, reward]
+          enum: [str, int, per, con]
+          description: User's attribute to use
+        collapseChecklist:
+          type: boolean
+          default: false
+          description: Determines if a checklist will be displayed
         notes:
           type: string
+          description: Extra notes
         date:
           type: string
           format: date
-          description: Due date (only for type "todo").
+          description: Due date to be shown in task list. Only valid for type "todo."
+        priority:
+          type: number
+          enum: [0.1, 1, 1.5, 2]
+          default: 1
+          description: Difficulty level (Trivial, Easy, Medium, Hard)
+        reminders:
+          type: array
+          items:
+            type: object
+            required: [id, startDate, time]
+            properties:
+              id:
+                type: string
+                format: uuid
+              startDate:
+                type: string
+                format: date
+              time:
+                type: string
+          description: Array of reminders
+        frequency:
+          type: string
+          enum: [daily, weekly, monthly, yearly]
+          default: weekly
+          description: Frequency of the task (only valid for type "daily")
+        repeat:
+          type: object
+          properties:
+            su:
+              type: boolean
+              default: true
+            m:
+              type: boolean
+              default: true
+            t:
+              type: boolean
+              default: true
+            w:
+              type: boolean
+              default: true
+            th:
+              type: boolean
+              default: true
+            f:
+              type: boolean
+              default: true
+            s:
+              type: boolean
+              default: true
+          description: Days of the week to repeat (only valid for type "daily" with weekly frequency)
+        everyX:
+          type: number
+          default: 1
+          description: Number of days until daily task is available again
+        streak:
+          type: number
+          default: 0
+          description: Number of days task has been checked off consecutively
+        daysOfMonth:
+          type: array
+          items:
+            type: integer
+          description: Array of days of the month (only valid for type "daily")
+        weeksOfMonth:
+          type: array
+          items:
+            type: integer
+          description: Array of weeks of the month (only valid for type "daily")
+        startDate:
+          type: string
+          format: date
+          description: Date when the task will first become available (only valid for type "daily")
+        up:
+          type: boolean
+          default: true
+          description: Enables the "+" for "Good habits" (only valid for type "habit")
+        down:
+          type: boolean
+          default: true
+          description: Enables the "-" for "Bad habits" (only valid for type "habit")
+        value:
+          type: number
+          default: 0
+          description: Cost in gold of the reward (only valid for type "reward")
+
+    TaskResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        userId:
+          type: string
+        alias:
+          type: string
+        text:
+          type: string
+        type:
+          type: string
+        notes:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        value:
+          type: number
+        priority:
+          type: number
+        attribute:
+          type: string
+        challenge:
+          type: object
+        group:
+          type: object
+        reminders:
+          type: array
+          items:
+            type: object
+        _id:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        checklist:
+          type: array
+          items:
+            type: object
+            properties:
+              completed:
+                type: boolean
+              text:
+                type: string
+              id:
+                type: string
+        collapseChecklist:
+          type: boolean
+        completed:
+          type: boolean
+        id:
+          type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        error:
+          type: string
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+              path:
+                type: string
