@@ -4,7 +4,7 @@ export default async function handler(req, res) {
     }
 
     // Retrieve the custom authentication header
-    const authKey = req.headers['x-auth-key'];
+    const authKey = req.headers['AUTH_KEY'];
 
     if (!authKey || authKey !== process.env.AUTH_KEY) {
         return res.status(401).json({ error: "Unauthorized" });
